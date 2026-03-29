@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EcoPlantas.Data;
 using EcoPlantas.Models;
+using Microsoft.AspNetCore.Http;
 using System.Linq;
 
 namespace EcoPlantas.Controllers
@@ -14,49 +15,26 @@ namespace EcoPlantas.Controllers
             _context = context;
         }
 
-        // GET: Login
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: Login
         [HttpPost]
         public IActionResult Login(string correo, string password)
         {
-            var user = _context.Usuarios
+            var usuario = _context.Usuarios
                 .FirstOrDefault(u => u.Correo == correo && u.Password == password);
 
-            if (user != null)
+            if (usuario != null)
             {
-                TempData["Usuario"] = user.Correo;
-                TempData["Puntos"] = user.Puntos;
+                HttpContext.Session.SetString("Usuario", usuario.Correo);
 
                 return RedirectToAction("Dashboard", "Home");
             }
 
-            ViewBag.Error = "Credenciales incorrectas";
-            return View();
-        }
-
-        // GET: Register
-        public IActionResult Register()
-        {
-            return View();
-        }
-
-        // POST: Register
-        [HttpPost]
-        public IActionResult Register(Usuario u)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Usuarios.Add(u);
-                _context.SaveChanges();
-
-                return RedirectToAction("Login");
-            }
-
+            ViewBag.Error = "Correo o contraseña incorrectos";
             return View();
         }
     }

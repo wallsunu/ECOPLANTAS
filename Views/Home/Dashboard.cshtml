@@ -1,9 +1,23 @@
+@model EcoPlantas.Models.Usuario
 <div class="card">
     <h2>🌱 EcoPlantas</h2>
 
     <h3>Bienvenido @TempData["Usuario"]</h3>
 
-    <p class="puntos">Puntos: @TempData["Puntos"]</p>
+    <p><strong>Puntos:</strong> @Model.Puntos</p>
 
-    <a class="btn" href="/Reciclaje/Crear">♻️ Registrar reciclaje</a>
+    <div class="card-body text-center">
+        <a href="/Reciclaje/Crear" class="btn btn-success">
+            ♻️ Registrar reciclaje
+        </a>
+    </div>
+</div>
+<div class="card mt-4 shadow">
+    <div class="card-body text-center">
+        <h5 class="card-title">🏆 Ranking</h5>
+        <p class="card-text">Mira los usuarios con más puntos</p>
+        <a href="/Home/Ranking" class="btn btn-success">
+            Ver Ranking
+        </a>
+    </div>
 </div>
