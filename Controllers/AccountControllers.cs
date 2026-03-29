@@ -29,12 +29,16 @@ namespace EcoPlantas.Controllers
 
             if (user != null)
             {
-                return RedirectToAction("Index", "Home");
+                TempData["Usuario"] = user.Correo;
+                TempData["Puntos"] = user.Puntos;
+
+                return RedirectToAction("Dashboard", "Home");
             }
 
             ViewBag.Error = "Credenciales incorrectas";
             return View();
         }
+
         // GET: Register
         public IActionResult Register()
         {

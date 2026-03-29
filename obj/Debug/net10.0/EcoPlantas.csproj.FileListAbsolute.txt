@@ -21,7 +21,6 @@ C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
 C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\scopedcss\bundle\EcoPlantas.styles.css
 C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\scopedcss\projectbundle\EcoPlantas.bundle.scp.css
-C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\compressed\bv347ga5rh-{0}-b9sayid5wm-b9sayid5wm.gz
 C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\compressed\9ywxwdpvjk-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\compressed\4jdqb4d50g-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\compressed\gz04rzkqif-{0}-bqjiyaj88i-bqjiyaj88i.gz
@@ -251,3 +250,4 @@ C:\Users\PC\ECOPLANTA\EcoPlantas\bin\Debug\net10.0\runtimes\win-arm64\native\e_s
 C:\Users\PC\ECOPLANTA\EcoPlantas\bin\Debug\net10.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\PC\ECOPLANTA\EcoPlantas\bin\Debug\net10.0\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\EcoPlantas.csproj.Up2Date
+C:\Users\PC\ECOPLANTA\EcoPlantas\obj\Debug\net10.0\compressed\bv347ga5rh-{0}-kso8jsomyy-kso8jsomyy.gz
