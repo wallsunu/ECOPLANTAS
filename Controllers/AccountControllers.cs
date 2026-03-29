@@ -35,5 +35,25 @@ namespace EcoPlantas.Controllers
             ViewBag.Error = "Credenciales incorrectas";
             return View();
         }
+        // GET: Register
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        // POST: Register
+        [HttpPost]
+        public IActionResult Register(Usuario u)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Usuarios.Add(u);
+                _context.SaveChanges();
+
+                return RedirectToAction("Login");
+            }
+
+            return View();
+        }
     }
 }
