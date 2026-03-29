@@ -11,5 +11,7 @@ namespace EcoPlantas.Data
         }
 
         public DbSet<Usuario> Usuarios { get; set; }
+
+        public DbSet<Reciclaje> Reciclajes { get; set; }
     }
 }

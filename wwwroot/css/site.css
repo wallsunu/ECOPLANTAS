@@ -105,3 +105,32 @@ a:hover {
     padding: 75px;
     border-radius: 170px;
 }
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    display: inline-block;
+    margin-top: 50px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.puntos {
+    font-size: 20px;
+    color: green;
+    font-weight: bold;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #2ecc71;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 15px;
+}
+
+.btn:hover {
+    background-color: #27ae60;
+}
