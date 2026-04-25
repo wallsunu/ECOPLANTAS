@@ -1,0 +1,30 @@
+@model IEnumerable<EcoPlantas.Models.ProductoEco>
+@{
+    ViewData["Title"] = "Catálogo";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4" style="color:#2d6a4f;">🌿 Catálogo de Plantas Ecológicas</h2>
+    <p class="text-center text-muted mb-4">Descubre nuestra selección de plantas orgánicas y ecológicas</p>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var producto in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0">
+                    <img src="@producto.ImagenUrl" class="card-img-top" alt="@producto.Nombre" style="height:200px;object-fit:cover;">
+                    <div class="card-body">
+                        <span class="badge mb-2" style="background-color:#52b788;">@producto.Categoria</span>
+                        <h5 class="card-title">@producto.Nombre</h5>
+                        <p class="card-text text-muted small">@producto.Descripcion</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center bg-white border-0 pb-3">
+                        <strong style="color:#2d6a4f; font-size:1.2rem;">$@producto.Precio.ToString("F2")</strong>
+                        <a asp-controller="Catalogo" asp-action="Detalle" asp-route-id="@producto.Id"
+                           class="btn btn-sm" style="background-color:#2d6a4f;color:white;">Ver Detalle</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

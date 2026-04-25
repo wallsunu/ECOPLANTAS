@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<div class="container mt-5" style="max-width:420px;">
+    <div class="text-center mb-4">
+        <h2 style="color:#2d6a4f;">🌱 EcoPlantas</h2>
+        <p class="text-muted">Acceso al panel de administración</p>
+    </div>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
+    <div class="card shadow border-0">
+        <div class="card-body p-4">
+            <form asp-action="Login" asp-controller="Auth" method="post">
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="admin@ecoplantas.com" required />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Contraseña</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required />
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-lg" style="background-color:#2d6a4f;color:white;">Iniciar Sesión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <p class="text-center text-muted mt-3 small">
+        Usuario: admin@ecoplantas.com &nbsp;|&nbsp; Contraseña: Admin123!
+    </p>
+</div>
