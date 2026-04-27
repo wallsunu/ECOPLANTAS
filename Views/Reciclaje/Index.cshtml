@@ -3,6 +3,7 @@
     ViewData["Title"] = "Reciclaje";
 }
 
+<div class="container mt-4">
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 style="color:#2d6a4f;">♻️ Registro de Reciclaje</h2>
     @if (Context.Session.GetString("UsuarioEmail") != null)
@@ -73,3 +74,5 @@ else
         </table>
     </div>
 }
+
+</div>
