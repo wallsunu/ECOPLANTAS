@@ -16,7 +16,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm">
             <div class="container">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">🌿 EcoPlantas</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -64,18 +64,30 @@
         </nav>
     </header>
 
-    <div class="container">
-        @if (TempData["Exito"] != null)
-        {
+    @if (TempData["Exito"] != null)
+    {
+        <div class="container mt-2">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 @TempData["Exito"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        }
+        </div>
+    }
+
+    @if (ViewData["FullWidth"] is true)
+    {
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
-    </div>
+    }
+    else
+    {
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    }
 
     <footer class="border-top footer text-muted mt-4 py-3">
         <div class="container text-center">

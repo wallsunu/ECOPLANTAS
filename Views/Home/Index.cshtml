@@ -1,8 +1,202 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "EcoPlantas - Cieneguilla";
+    ViewData["FullWidth"] = true;
+    var email = Context.Session.GetString("UsuarioEmail");
+    var logueado = email != null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- HERO -->
+<section class="eco-hero">
+    <div class="container text-center py-5">
+        <div class="mb-3">
+            <span class="badge eco-badge-ods px-3 py-2">ODS 12 · Producción y Consumo Responsables</span>
+        </div>
+        <h1 class="eco-hero-title">Recicla, Gana Puntos<br>y Canjea Plantas</h1>
+        <p class="eco-hero-sub">
+            Conecta tu reciclaje con el camión municipal de Cieneguilla<br>
+            y recibe plantas ecológicas para tu hogar.
+        </p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center mt-4">
+            <a asp-controller="Catalogo" asp-action="Index" class="btn eco-btn-primary btn-lg px-4">
+                Ver catálogo
+            </a>
+            <a asp-controller="Reciclaje" asp-action="@(logueado ? "Crear" : "Index")" class="btn eco-btn-outline btn-lg px-4">
+                Registrar reciclaje
+            </a>
+            <a asp-controller="Contacto" asp-action="Index" class="btn btn-outline-light btn-lg px-4">
+                Contacto
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CÓMO FUNCIONA -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center eco-section-title mb-5">¿Cómo funciona?</h2>
+        <div class="row g-4 text-center">
+            <div class="col-6 col-md-3">
+                <div class="eco-step-card h-100 p-4">
+                    <div class="eco-step-num">1</div>
+                    <div class="eco-step-icon mb-3">🔑</div>
+                    <h6 class="fw-bold">Regístrate o<br>inicia sesión</h6>
+                    <p class="text-muted small mb-0">Crea tu cuenta vecinal en segundos</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="eco-step-card h-100 p-4">
+                    <div class="eco-step-num">2</div>
+                    <div class="eco-step-icon mb-3">🚛</div>
+                    <h6 class="fw-bold">Entrega tu<br>reciclaje</h6>
+                    <p class="text-muted small mb-0">Al camión municipal en tu zona</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="eco-step-card h-100 p-4">
+                    <div class="eco-step-num">3</div>
+                    <div class="eco-step-icon mb-3">⚖️</div>
+                    <h6 class="fw-bold">Registra los<br>kilos reciclados</h6>
+                    <p class="text-muted small mb-0">Ingresa el tipo y cantidad en la app</p>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="eco-step-card h-100 p-4">
+                    <div class="eco-step-num">4</div>
+                    <div class="eco-step-icon mb-3">🌱</div>
+                    <h6 class="fw-bold">Gana puntos y<br>canjea plantas</h6>
+                    <p class="text-muted small mb-0">Elige tu planta del catálogo ecológico</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PANEL VECINO + PANEL MUNICIPAL -->
+<section class="py-5" style="background:#f0faf4;">
+    <div class="container">
+        <div class="row g-4 align-items-stretch">
+
+            <!-- Panel vecino -->
+            <div class="col-md-6">
+                <div class="eco-panel h-100 p-4">
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <span style="font-size:1.6rem;">👤</span>
+                        <h5 class="mb-0 fw-bold" style="color:#2d6a4f;">Tu progreso vecinal</h5>
+                    </div>
+
+                    @if (logueado)
+                    {
+                        <p class="text-muted small">Sesión activa: <strong>@email</strong></p>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small fw-bold">Total reciclado</span>
+                            <span class="small text-success fw-bold">Ver en Reciclaje</span>
+                        </div>
+                        <div class="progress mb-3" style="height:18px;border-radius:10px;">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width:40%;background:linear-gradient(90deg,#2ECC71,#2d6a4f);">
+                                40%
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-4">Necesitas 25 kg más para canjear tu próxima planta</p>
+                        <a asp-controller="Reciclaje" asp-action="Crear" class="btn eco-btn-primary w-100">
+                            ♻️ Registrar reciclaje ahora
+                        </a>
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-3">Inicia sesión para ver tu progreso y registrar reciclaje.</p>
+                        <div class="progress mb-3" style="height:18px;border-radius:10px;">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width:0%;background:linear-gradient(90deg,#2ECC71,#2d6a4f);">
+                            </div>
+                        </div>
+                        <p class="text-muted small mb-4">— kg reciclados · — puntos disponibles</p>
+                        <a asp-controller="Auth" asp-action="Login" class="btn eco-btn-primary w-100">
+                            Iniciar sesión
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <!-- Panel municipal -->
+            <div class="col-md-6">
+                <div class="eco-panel h-100 p-4">
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <span style="font-size:1.6rem;">🏛️</span>
+                        <h5 class="mb-0 fw-bold" style="color:#8E44AD;">Panel Municipal · Cieneguilla</h5>
+                    </div>
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="eco-stat-card text-center p-3">
+                                <div class="eco-stat-num" style="color:#8E44AD;">3</div>
+                                <div class="text-muted small">Condominios con<br>recojo pendiente</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="eco-stat-card text-center p-3">
+                                <div class="eco-stat-num" style="color:#2d6a4f;">120 kg</div>
+                                <div class="text-muted small">Peso total<br>pendiente</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="eco-map-placeholder d-flex align-items-center justify-content-center">
+                        <div class="text-center text-muted">
+                            <div style="font-size:2.5rem;">🗺️</div>
+                            <div class="small mt-1">Mapa de rutas municipales<br><span class="badge bg-secondary">Próximamente</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ODS 12 -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-md-2 text-center">
+                <div class="eco-ods-badge mx-auto">
+                    <div style="font-size:2.2rem;">⚙️</div>
+                    <div class="fw-bold" style="font-size:.75rem;letter-spacing:.5px;">ODS 12</div>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <h4 class="fw-bold mb-2" style="color:#2d6a4f;">Producción y Consumo Responsables</h4>
+                <p class="text-muted mb-0">
+                    EcoPlantas se alinea con el Objetivo de Desarrollo Sostenible 12 de la ONU.
+                    Incentivamos el reciclaje domiciliario en Cieneguilla conectando a los vecinos
+                    con el sistema municipal, reduciendo residuos y promoviendo una economía circular
+                    a través del canje de plantas ecológicas.
+                </p>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="d-flex flex-column gap-2">
+                    <div class="eco-ods-stat">
+                        <span class="fw-bold" style="color:#2ECC71;font-size:1.4rem;">↓ 30%</span>
+                        <span class="text-muted small d-block">residuos al relleno</span>
+                    </div>
+                    <div class="eco-ods-stat">
+                        <span class="fw-bold" style="color:#2d6a4f;font-size:1.4rem;">100%</span>
+                        <span class="text-muted small d-block">plantas orgánicas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="eco-cta py-5">
+    <div class="container text-center">
+        <h3 class="text-white fw-bold mb-3">¿Listo para empezar a reciclar?</h3>
+        <p class="text-white-50 mb-4">Únete a los vecinos de Cieneguilla que ya cuidan el planeta.</p>
+        <a asp-controller="Reciclaje" asp-action="Index" class="btn btn-light btn-lg px-5 me-2" style="color:#2d6a4f;font-weight:600;">
+            Ver reciclajes
+        </a>
+        <a asp-controller="Catalogo" asp-action="Index" class="btn btn-outline-light btn-lg px-5">
+            Ver catálogo
+        </a>
+    </div>
+</section>
