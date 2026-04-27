@@ -20,9 +20,18 @@
             <a asp-controller="Catalogo" asp-action="Index" class="btn eco-btn-primary btn-lg px-4">
                 Ver catálogo
             </a>
-            <a asp-controller="Reciclaje" asp-action="@(logueado ? "Crear" : "Index")" class="btn eco-btn-outline btn-lg px-4">
-                Registrar reciclaje
-            </a>
+            @if (logueado)
+            {
+                <a asp-controller="Reciclaje" asp-action="Crear" class="btn eco-btn-outline btn-lg px-4">
+                    Registrar reciclaje
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Auth" asp-action="Login" class="btn eco-btn-outline btn-lg px-4">
+                    Registrar reciclaje
+                </a>
+            }
             <a asp-controller="Contacto" asp-action="Index" class="btn btn-outline-light btn-lg px-4">
                 Contacto
             </a>
