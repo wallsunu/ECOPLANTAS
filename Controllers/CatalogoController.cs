@@ -30,7 +30,7 @@ namespace EcoPlantas.Controllers
         [HttpGet("/Catalogo/Admin")]
         public IActionResult Admin()
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
+            if (HttpContext.Session.GetString("UsuarioRol") != "Admin")
                 return RedirectToAction("Login", "Auth");
 
             var productos = _context.Productos.ToList();
