@@ -1,84 +1,70 @@
 # EcoPlantas
 
-Aplicación web ASP.NET Core MVC para catálogo de plantas ecológicas, con formulario de contacto y panel de administración.
+Aplicación web desarrollada en ASP.NET Core MVC para promover el reciclaje y el canje de plantas ecológicas.  
+El sistema permite visualizar un catálogo de plantas, registrar reciclaje, enviar mensajes de contacto y administrar sesiones de usuario.
 
-## Requisitos
+## Tecnologías utilizadas
 
-- .NET 8 SDK
-- PostgreSQL 14 o superior
+- ASP.NET Core MVC (.NET 8)
+- Entity Framework Core
+- PostgreSQL
+- Redis para sesiones en producción
+- Bootstrap
+- Docker
+- Render
+
+## Funcionalidades principales
+
+### Funcionalidades sin iniciar sesión
+
+Los usuarios pueden acceder libremente a:
+
+- Página principal tipo landing.
+- Catálogo de plantas ecológicas.
+- Página de contacto.
+- Registro de nuevos usuarios.
+- Inicio de sesión.
+
+### Funcionalidades con sesión iniciada
+
+Los usuarios registrados pueden:
+
+- Iniciar sesión.
+- Registrar reciclaje.
+- Ver el listado de reciclajes.
+- Consultar el detalle de un registro de reciclaje.
+- Cerrar sesión.
+
+### Funcionalidades de autenticación
+
+El sistema cuenta con:
+
+- Login con usuarios guardados en base de datos.
+- Registro de nuevos usuarios.
+- Contraseñas protegidas con BCrypt.
+- Validación de email duplicado.
+- Manejo de sesión con `UsuarioId`, `UsuarioEmail` y `UsuarioRol`.
+
+## Usuario administrador de prueba
+
+El sistema crea automáticamente un usuario administrador inicial mediante el seed de datos:
+
+| Campo      |          Valor         |
+|------------|------------------------|
+| Email      | `admin@ecoplantas.com` |
+| Contraseña | `Admin123!`            |
+| Rol        | `Admin`                |
+
+> Nota: Esta credencial es solo para pruebas académicas.
 
 ## Base de datos — PostgreSQL
 
-SQLite fue reemplazado por PostgreSQL como base de datos principal.
+El proyecto usa PostgreSQL como base de datos principal.
 
-### Configuración local
+Tablas principales:
 
-En `appsettings.json` está la cadena de conexión de ejemplo para desarrollo local:
+- `Productos`
+- `ContactoMensajes`
+- `Reciclajes`
+- `Usuarios`
 
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Host=localhost;Port=5432;Database=ecoplantas;Username=postgres;Password=postgres"
-}
-```
-
-Crea la base de datos en PostgreSQL antes de aplicar migraciones:
-
-```sql
-CREATE DATABASE ecoplantas;
-```
-
-### Aplicar migraciones
-
-```bash
-dotnet ef database update
-```
-
-Esto crea las tablas `Productos`, `ContactoMensajes` y `Reciclajes`.
-
-### Variable de entorno para producción (Render)
-
-En producción la conexión se configura mediante la variable de entorno:
-
-```
-ConnectionStrings__DefaultConnection=Host=<host>;Port=5432;Database=<db>;Username=<user>;Password=<password>
-```
-
-Esta variable sobreescribe el valor de `appsettings.json` en tiempo de ejecución. No pongas credenciales reales en el archivo de configuración.
-
-## Sesiones — Redis
-
-### Desarrollo local (opcional)
-
-En local no es necesario Redis. Si la variable `Redis__ConnectionString` no está definida y el entorno es `Development`, la app usa `DistributedMemoryCache` automáticamente.
-
-Si quieres probar Redis en local, levanta una instancia con Docker:
-
-```bash
-docker run -d -p 6379:6379 redis:alpine
-```
-
-Y define la variable de entorno antes de arrancar la app:
-
-```bash
-Redis__ConnectionString=localhost:6379
-```
-
-### Producción (obligatorio)
-
-En producción la app requiere Redis para las sesiones. Si `Redis__ConnectionString` no está definida, la app lanza un error al iniciar.
-
-Configura la variable de entorno en Render (u otro proveedor):
-
-```
-Redis__ConnectionString=<host>:<port>
-```
-
-Si Render entrega la URL en formato `redis://host:port`, la app la normaliza automáticamente — no necesitas hacer nada extra.
-
-#### Render — Redis interno
-
-En Render puedes crear un servicio Redis gratuito y usar la variable de entorno `REDIS_URL` que genera automáticamente. Mapéala así en el panel de Render:
-
-| Variable en Render | Valor |
-|---|---|
-| `Redis__ConnectionString` | (pega el valor de `REDIS_URL` de tu servicio Redis de Render) |
