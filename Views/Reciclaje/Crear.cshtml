@@ -1,0 +1,50 @@
+@model EcoPlantas.Models.Reciclaje
+@{
+    ViewData["Title"] = "Registrar Reciclaje";
+}
+
+<div class="container" style="max-width:520px;">
+    <h2 class="mb-4" style="color:#2d6a4f;">♻️ Registrar Reciclaje</h2>
+
+    <div class="card shadow border-0">
+        <div class="card-body p-4">
+            <form asp-action="Crear" asp-controller="Reciclaje" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label asp-for="TipoMaterial" class="form-label fw-bold"></label>
+                    <select asp-for="TipoMaterial" class="form-select">
+                        <option value="">-- Selecciona un material --</option>
+                        <option>Plástico</option>
+                        <option>Vidrio</option>
+                        <option>Papel</option>
+                        <option>Metal</option>
+                        <option>Orgánico</option>
+                        <option>Electrónico</option>
+                        <option>Textil</option>
+                        <option>Otro</option>
+                    </select>
+                    <span asp-validation-for="TipoMaterial" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Cantidad" class="form-label fw-bold"></label>
+                    <div class="input-group">
+                        <input asp-for="Cantidad" type="number" min="1" class="form-control" placeholder="Ej: 5" />
+                        <span class="input-group-text">kg</span>
+                    </div>
+                    <span asp-validation-for="Cantidad" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-success flex-fill">Guardar registro</button>
+                    <a asp-controller="Reciclaje" asp-action="Index" class="btn btn-outline-secondary flex-fill">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

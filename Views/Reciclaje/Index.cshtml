@@ -1,0 +1,75 @@
+@model IEnumerable<EcoPlantas.Models.Reciclaje>
+@{
+    ViewData["Title"] = "Reciclaje";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 style="color:#2d6a4f;">♻️ Registro de Reciclaje</h2>
+    @if (Context.Session.GetString("UsuarioEmail") != null)
+    {
+        <a asp-controller="Reciclaje" asp-action="Crear" class="btn btn-success">
+            + Registrar reciclaje
+        </a>
+    }
+    else
+    {
+        <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-success">
+            Inicia sesión para registrar
+        </a>
+    }
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center p-3" style="background-color:#d8f3dc;">
+            <div style="font-size:2rem;font-weight:bold;color:#2d6a4f;">@ViewBag.TotalKg kg</div>
+            <div class="text-muted">Total reciclado</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm text-center p-3" style="background-color:#b7e4c7;">
+            <div style="font-size:2rem;font-weight:bold;color:#1b4332;">@Model.Count()</div>
+            <div class="text-muted">Registros</div>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Aún no hay registros de reciclaje.
+        @if (Context.Session.GetString("UsuarioEmail") != null)
+        {
+            <a asp-controller="Reciclaje" asp-action="Crear">¡Sé el primero en registrar!</a>
+        }
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead style="background-color:#2d6a4f;color:white;">
+                <tr>
+                    <th>Material</th>
+                    <th>Cantidad (kg)</th>
+                    <th>Fecha</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td><span class="badge" style="background-color:#52b788;font-size:.9rem;">@r.TipoMaterial</span></td>
+                        <td><strong>@r.Cantidad kg</strong></td>
+                        <td>@r.Fecha.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <a asp-controller="Reciclaje" asp-action="Detalle" asp-route-id="@r.Id"
+                               class="btn btn-sm btn-outline-secondary">Ver</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
