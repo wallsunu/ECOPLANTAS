@@ -6,6 +6,12 @@ namespace EcoPlantas.Data
     {
         public static void Seed(ApplicationDbContext context)
         {
+            SeedProductos(context);
+            SeedUsuarios(context);
+        }
+
+        private static void SeedProductos(ApplicationDbContext context)
+        {
             if (context.Productos.Any()) return;
 
             context.Productos.AddRange(
@@ -16,6 +22,20 @@ namespace EcoPlantas.Data
                 new ProductoEco { Nombre = "Lavanda Ecológica", Categoria = "Aromáticas", Descripcion = "Planta aromática con propiedades relajantes.", Precio = 10.75m, ImagenUrl = "https://via.placeholder.com/300x200/74c69d/white?text=Lavanda", Disponible = true },
                 new ProductoEco { Nombre = "Aloe Vera Orgánico", Categoria = "Medicinal", Descripcion = "Planta medicinal multipropósito, crece sin pesticidas.", Precio = 9.99m, ImagenUrl = "https://via.placeholder.com/300x200/b7e4c7/black?text=Aloe", Disponible = true }
             );
+            context.SaveChanges();
+        }
+
+        private static void SeedUsuarios(ApplicationDbContext context)
+        {
+            if (context.Usuarios.Any()) return;
+
+            context.Usuarios.Add(new Usuario
+            {
+                Email = "admin@ecoplantas.com",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                Rol = "Admin",
+                Activo = true
+            });
             context.SaveChanges();
         }
     }

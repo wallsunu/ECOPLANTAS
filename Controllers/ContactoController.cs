@@ -38,7 +38,7 @@ namespace EcoPlantas.Controllers
         [HttpGet]
         public IActionResult Mensajes()
         {
-            if (HttpContext.Session.GetString("Usuario") == null)
+            if (HttpContext.Session.GetString("UsuarioRol") != "Admin")
                 return RedirectToAction("Login", "Auth");
 
             var mensajes = _context.ContactoMensajes.OrderByDescending(m => m.FechaRegistro).ToList();
