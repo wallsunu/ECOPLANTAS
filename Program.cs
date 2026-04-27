@@ -56,7 +56,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Render termina TLS en su proxy; el contenedor recibe HTTP plano.
+// UseHttpsRedirection causaria redirect loop en produccion.
+if (app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();

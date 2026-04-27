@@ -82,3 +82,48 @@ En Render puedes crear un servicio Redis gratuito y usar la variable de entorno 
 | Variable en Render | Valor |
 |---|---|
 | `Redis__ConnectionString` | (pega el valor de `REDIS_URL` de tu servicio Redis de Render) |
+
+## Despliegue en Render
+
+La app incluye un `Dockerfile` multi-stage listo para Render.
+
+### Pasos
+
+1. Crear un servicio **Web Service** en Render apuntando al repositorio.
+2. Render detecta el `Dockerfile` automáticamente.
+3. Configurar las variables de entorno en el panel de Render (Environment).
+
+### Variables de entorno obligatorias
+
+| Variable | Descripción |
+|---|---|
+| `ASPNETCORE_ENVIRONMENT` | Debe ser `Production` |
+| `ConnectionStrings__DefaultConnection` | Cadena de conexión PostgreSQL (ver abajo) |
+| `Redis__ConnectionString` | Cadena de conexión Redis (ver abajo) |
+
+### ConnectionStrings__DefaultConnection
+
+Usa el **Internal Database URL** de tu PostgreSQL de Render. El formato requerido es:
+
+```
+Host=HOST_INTERNO;Port=5432;Database=NOMBRE_DB;Username=USUARIO;Password=PASSWORD
+```
+
+> Render muestra estos datos en el panel del servicio PostgreSQL → Internal Connection String. Copia los campos por separado y arma la cadena en el formato anterior. **No uses la External URL** — es más lenta y tiene cuota limitada.
+
+### Redis__ConnectionString
+
+Usa el **Internal Key Value URL** de tu Redis de Render. Render lo entrega en formato:
+
+```
+redis://red-xxxxxxxxxxxx:6379
+```
+
+La app normaliza este formato automáticamente. Pégalo tal cual como valor de `Redis__ConnectionString`.
+
+### Notas de infraestructura
+
+- El contenedor escucha en HTTP plano en el puerto `PORT` (Render lo inyecta como variable). La terminación TLS la hace el proxy de Render.
+- `UseHttpsRedirection` está desactivado en producción para evitar redirect loops.
+- Las migraciones se aplican automáticamente al arrancar vía `EnsureCreated`. Para migraciones incrementales futuras usa `dotnet ef database update` antes del deploy o agrega un paso de startup.
+- **No subas passwords reales a GitHub.** Todas las credenciales van como variables de entorno en el panel de Render.
