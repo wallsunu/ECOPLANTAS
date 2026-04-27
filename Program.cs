@@ -10,8 +10,36 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Session
-builder.Services.AddDistributedMemoryCache();
+// Session cache: Redis en producción, memoria en desarrollo
+var redisConn = builder.Configuration["Redis__ConnectionString"]
+             ?? builder.Configuration["Redis:ConnectionString"];
+
+if (!string.IsNullOrWhiteSpace(redisConn))
+{
+    // Normalizar URL estilo redis://host:port que entrega Render
+    if (redisConn.StartsWith("redis://", StringComparison.OrdinalIgnoreCase))
+    {
+        var uri = new Uri(redisConn);
+        redisConn = $"{uri.Host}:{uri.Port}";
+    }
+
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = redisConn;
+        options.InstanceName = "ecoplantas:";
+    });
+}
+else if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+else
+{
+    throw new InvalidOperationException(
+        "Redis__ConnectionString es requerido en producción. " +
+        "Configura la variable de entorno Redis__ConnectionString en Render.");
+}
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -28,7 +56,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// Render termina TLS en su proxy; el contenedor recibe HTTP plano.
+// UseHttpsRedirection causaria redirect loop en produccion.
+if (app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
