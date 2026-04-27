@@ -1,0 +1,22 @@
+# Build outputs
+bin/
+obj/
+
+# Base de datos local
+*.db
+*.db-shm
+*.db-wal
+
+# Scripts de desarrollo local
+ver_db.py
+
+# Visual Studio
+.vs/
+*.user
+
+# Rider / JetBrains
+.idea/
+
+# dotnet
+*.suo
+*.ncrunch*

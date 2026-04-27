@@ -16,22 +16,23 @@ namespace EcoPlantas.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            return View(new ContactoMensaje());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(ContactoMensaje mensaje)
+        public async Task<IActionResult> Index(ContactoMensaje contacto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                mensaje.FechaRegistro = DateTime.Now;
-                _context.ContactoMensajes.Add(mensaje);
-                await _context.SaveChangesAsync();
-                TempData["Exito"] = "¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.";
-                return RedirectToAction(nameof(Index));
+                return View(contacto);
             }
-            return View(mensaje);
+
+            contacto.FechaRegistro = DateTime.Now;
+            _context.ContactoMensajes.Add(contacto);
+            await _context.SaveChangesAsync();
+            TempData["Exito"] = "Mensaje enviado correctamente.";
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
