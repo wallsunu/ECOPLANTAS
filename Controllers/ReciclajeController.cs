@@ -16,6 +16,9 @@ namespace EcoPlantas.Controllers
 
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.Session.GetString("UsuarioEmail") == null)
+                return RedirectToAction("Login", "Auth");
+
             var reciclajes = await _context.Reciclajes
                 .OrderByDescending(r => r.Fecha)
                 .ToListAsync();
@@ -53,6 +56,9 @@ namespace EcoPlantas.Controllers
 
         public async Task<IActionResult> Detalle(int id)
         {
+            if (HttpContext.Session.GetString("UsuarioEmail") == null)
+                return RedirectToAction("Login", "Auth");
+
             var reciclaje = await _context.Reciclajes.FindAsync(id);
             if (reciclaje == null) return NotFound();
             return View(reciclaje);
