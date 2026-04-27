@@ -28,7 +28,7 @@ namespace EcoPlantas.Controllers
                 return View(contacto);
             }
 
-            contacto.FechaRegistro = DateTime.Now;
+            contacto.FechaRegistro = DateTime.UtcNow;
             _context.ContactoMensajes.Add(contacto);
             await _context.SaveChangesAsync();
             TempData["Exito"] = "Mensaje enviado correctamente.";
