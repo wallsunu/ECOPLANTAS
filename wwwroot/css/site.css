@@ -1,31 +1,222 @@
+/* ── Variables globales ── */
+:root {
+    --eco-green: #2ECC71;
+    --eco-dark: #2d6a4f;
+    --eco-purple: #8E44AD;
+    --eco-light: #f0faf4;
+}
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html { font-size: 16px; }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
+.form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* ── Hero ── */
+.eco-hero {
+    background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 50%, #40916c 100%);
+    padding: 80px 0 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+.eco-hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: rgba(46,204,113,.12);
+    pointer-events: none;
+}
+
+.eco-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -40px;
+    width: 260px; height: 260px;
+    border-radius: 50%;
+    background: rgba(46,204,113,.08);
+    pointer-events: none;
+}
+
+.eco-hero-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: .75rem;
+}
+
+.eco-hero-sub {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,.82);
+    line-height: 1.6;
+}
+
+.eco-badge-ods {
+    background: rgba(46,204,113,.25);
+    color: #b7e4c7;
+    font-size: .75rem;
+    letter-spacing: .5px;
+    border-radius: 20px;
+}
+
+/* ── Botones ── */
+.eco-btn-primary {
+    background: var(--eco-green);
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    transition: background .2s, transform .1s;
+}
+.eco-btn-primary:hover {
+    background: #27ae60;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.eco-btn-outline {
+    border: 2px solid var(--eco-green);
+    color: var(--eco-green);
+    font-weight: 600;
+    background: transparent;
+    transition: all .2s;
+}
+.eco-btn-outline:hover {
+    background: var(--eco-green);
+    color: #fff;
+}
+
+/* ── Sección títulos ── */
+.eco-section-title {
+    font-weight: 800;
+    color: var(--eco-dark);
+    position: relative;
+    display: inline-block;
+}
+.eco-section-title::after {
+    content: '';
+    display: block;
+    width: 50px; height: 4px;
+    background: var(--eco-green);
+    border-radius: 2px;
+    margin: 8px auto 0;
+}
+
+/* ── Pasos ── */
+.eco-step-card {
+    border: 2px solid #d8f3dc;
+    border-radius: 16px;
+    position: relative;
+    transition: border-color .2s, box-shadow .2s;
+    background: #fff;
+}
+.eco-step-card:hover {
+    border-color: var(--eco-green);
+    box-shadow: 0 6px 20px rgba(46,204,113,.15);
+}
+
+.eco-step-num {
+    position: absolute;
+    top: -14px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--eco-green);
+    color: #fff;
+    font-weight: 800;
+    font-size: .85rem;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.eco-step-icon {
+    font-size: 2.2rem;
+}
+
+/* ── Paneles ── */
+.eco-panel {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,.07);
+    border: 1px solid #e9f5ee;
+}
+
+.eco-stat-card {
+    background: var(--eco-light);
+    border-radius: 12px;
+    border: 1px solid #d8f3dc;
+}
+
+.eco-stat-num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.eco-map-placeholder {
+    background: var(--eco-light);
+    border: 2px dashed #b7e4c7;
+    border-radius: 12px;
+    min-height: 120px;
+    padding: 16px;
+}
+
+/* ── ODS ── */
+.eco-ods-badge {
+    width: 90px; height: 90px;
+    background: linear-gradient(135deg, #8E44AD, #6c3483);
+    border-radius: 16px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff;
+}
+
+.eco-ods-stat {
+    background: var(--eco-light);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+/* ── CTA final ── */
+.eco-cta {
+    background: linear-gradient(135deg, var(--eco-dark), #1b4332);
+}
+
+/* ── Navbar mejoras ── */
+.navbar {
+    padding-top: .6rem;
+    padding-bottom: .6rem;
+}
+.navbar-brand {
+    font-size: 1.3rem !important;
+}
+.nav-link {
+    font-weight: 500;
+    transition: color .15s;
+}
+
+/* ── Forms floats fix ── */
+.form-floating > .form-control-plaintext::placeholder,
+.form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+.form-floating > .form-control-plaintext:focus::placeholder,
+.form-floating > .form-control:focus::placeholder {
+    text-align: start;
 }
