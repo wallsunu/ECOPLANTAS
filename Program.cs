@@ -20,6 +20,7 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API REST para el sistema EcoPlantas - Cieneguilla"
     });
+    c.DocumentFilter<SoloApiFilter>();
 });
 
 // Session cache: Redis en produccion, memoria en desarrollo
@@ -97,3 +98,16 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// Filtra Swagger para mostrar solo rutas que empiezan con /api
+class SoloApiFilter : Swashbuckle.AspNetCore.SwaggerGen.IDocumentFilter
+{
+    public void Apply(Microsoft.OpenApi.Models.OpenApiDocument doc, Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext ctx)
+    {
+        var rutas = doc.Paths.Keys
+            .Where(k => !k.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        foreach (var ruta in rutas)
+            doc.Paths.Remove(ruta);
+    }
+}
