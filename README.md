@@ -68,3 +68,59 @@ Tablas principales:
 - `Reciclajes`
 - `Usuarios`
 
+## API REST
+
+La documentación interactiva está disponible en `/swagger`.
+
+### Endpoints disponibles
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| GET | `/api/health` | Estado del servicio |
+| GET | `/api/productos` | Listar productos disponibles |
+| GET | `/api/productos/{id}` | Detalle de un producto |
+| GET | `/api/reciclajes` | Listar reciclajes |
+| POST | `/api/reciclajes` | Registrar un reciclaje |
+| POST | `/api/contacto` | Enviar mensaje de contacto |
+| GET | `/api/usuarios/me` | Datos del usuario en sesión |
+| POST | `/api/ml/clasificar-reciclaje` | Clasificar impacto de un reciclaje con ML.NET |
+
+## ML.NET — Clasificación de impacto de reciclaje
+
+El endpoint `POST /api/ml/clasificar-reciclaje` usa un modelo de clasificación multiclase entrenado con ML.NET.
+
+El modelo toma como entrada el tipo de material y la cantidad en kg, y predice el nivel de impacto ambiental: **Bajo**, **Medio** o **Alto**.
+
+El modelo se entrena en memoria al primer uso con datos sintéticos. No requiere archivos externos ni configuración adicional.
+
+### Ejemplo de request
+
+```json
+POST /api/ml/clasificar-reciclaje
+Content-Type: application/json
+
+{
+  "tipoMaterial": "Plástico",
+  "cantidadKg": 8
+}
+```
+
+### Ejemplo de response
+
+```json
+{
+  "tipoMaterial": "Plástico",
+  "cantidadKg": 8,
+  "nivelImpacto": "Medio",
+  "mensaje": "Reciclaje de 8 kg de Plástico tiene un impacto ambiental MEDIO. ¡Sigue sumando!"
+}
+```
+
+### Materiales soportados
+
+- Plástico
+- Vidrio
+- Metal
+- Papel
+- Orgánico
+
