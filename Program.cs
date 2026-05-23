@@ -1,10 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using EcoPlantas.Data;
+using EcoPlantas.Services.ML;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
+builder.Services.AddSingleton<ClasificacionReciclajeService>();
 
 // EF Core con PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
