@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using EcoPlantas.Services.ML;
+using EcoPlantas.Models.Dto;
 using System.ComponentModel.DataAnnotations;
 
 namespace EcoPlantas.Controllers.Api
@@ -9,10 +10,14 @@ namespace EcoPlantas.Controllers.Api
     public class MlClasificacionController : ControllerBase
     {
         private readonly ClasificacionReciclajeService _clasificacion;
+        private readonly RecomendacionPlantaService _recomendacion;
 
-        public MlClasificacionController(ClasificacionReciclajeService clasificacion)
+        public MlClasificacionController(
+            ClasificacionReciclajeService clasificacion,
+            RecomendacionPlantaService recomendacion)
         {
             _clasificacion = clasificacion;
+            _recomendacion = recomendacion;
         }
 
         [HttpPost("clasificar-reciclaje")]
@@ -36,6 +41,26 @@ namespace EcoPlantas.Controllers.Api
                 cantidadKg   = request.CantidadKg,
                 nivelImpacto = prediccion.NivelImpacto,
                 mensaje
+            });
+        }
+        [HttpPost("recomendar-planta")]
+        public IActionResult RecomendarPlanta([FromBody] RecomendarPlantaRequest request)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var (planta, motivo) = _recomendacion.Recomendar(
+                request.TipoMaterial,
+                (float)request.CantidadKg,
+                request.Preferencia);
+
+            return Ok(new
+            {
+                tipoMaterial     = request.TipoMaterial,
+                cantidadKg       = request.CantidadKg,
+                preferencia      = request.Preferencia,
+                plantaRecomendada = planta,
+                motivo
             });
         }
     }
