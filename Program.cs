@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 builder.Services.AddSingleton<ClasificacionReciclajeService>();
+builder.Services.AddSingleton<RecomendacionPlantaService>();
 
 // EF Core con PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
