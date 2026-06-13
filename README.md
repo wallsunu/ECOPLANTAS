@@ -193,6 +193,71 @@ El modelo se entrena en memoria al primer uso con datos sintéticos que asocian 
 
 ---
 
+## Agente IA con Semantic Kernel + Ollama
+
+EcoPlantas incluye un agente inteligente que combina **Microsoft Semantic Kernel** como capa de orquestación con **Ollama** como LLM local.
+
+### Flujo de la arquitectura
+
+```
+Usuario → AiController → AgentService → Semantic Kernel → OllamaService → Respuesta
+```
+
+### Componentes
+
+| Componente | Archivo | Propósito |
+|------------|---------|-----------|
+| `EcoPlantasSemanticKernelService` | `Services/SemanticKernel/EcoPlantasSemanticKernelService.cs` | Orquestador con `Kernel.CreateBuilder()` y plugin nativo |
+| `EcoPlantasPlugin` | (mismo archivo) | Plugin con funciones que el Kernel puede invocar |
+| `AgentService` | `Services/AgentService.cs` | Delega al Kernel para enriquecer el contexto antes de llamar a Ollama |
+| `OllamaService` | `Services/OllamaService.cs` | LLM local vía API REST de Ollama (modelo `qwen3:4b`) |
+| `AiController` | `Controllers/AiController.cs` | Endpoints HTTP del agente |
+
+### Funciones del plugin `EcoPlantas`
+
+| Función | Descripción |
+|---------|-------------|
+| `ObtenerTotalKgReciclados` | Total de kg reciclados desde la base de datos |
+| `ObtenerTotalRegistros` | Número de registros de reciclaje |
+| `ObtenerProductosDisponibles` | Lista de plantas disponibles en el catálogo |
+| `ObtenerContextoEcologico` | Contexto y personalidad del agente EcoBot |
+
+### Endpoints del agente
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| `POST` | `/api/ai/chat` | Chat con EcoBot (texto libre) |
+| `GET` | `/api/ai/test` | Prueba rápida: consulta de reciclaje |
+| `GET` | `/api/ai/semantic-kernel-test` | Estado del Kernel: versión, plugins y datos en tiempo real |
+
+### Ejemplo: Semantic Kernel test
+
+```
+GET /api/ai/semantic-kernel-test
+```
+
+```json
+{
+  "semanticKernelVersion": "1.29.0.0",
+  "kernelActivo": true,
+  "pluginsRegistrados": [
+    {
+      "nombre": "EcoPlantas",
+      "funciones": ["ObtenerTotalKgReciclados", "ObtenerTotalRegistros", "ObtenerProductosDisponibles", "ObtenerContextoEcologico"]
+    }
+  ],
+  "datosEnTiempoReal": {
+    "totalKgReciclados": "42 kg",
+    "totalRegistros": "7",
+    "plantasDisponibles": "Pothos Dorado, Suculenta Echeveria, ..."
+  }
+}
+```
+
+> Requiere Ollama corriendo localmente con el modelo `qwen3:4b` para los endpoints de chat. El endpoint `semantic-kernel-test` funciona sin Ollama.
+
+---
+
 ## Ramas del repositorio
 
 | Rama | Propósito |

@@ -34,6 +34,13 @@ namespace EcoPlantas.Controllers
 
             return Ok(respuesta);
         }
+
+        [HttpGet("semantic-kernel-test")]
+        public async Task<IActionResult> SemanticKernelTest()
+        {
+            var estado = await _agentService.ObtenerEstadoSemanticKernel();
+            return Ok(estado);
+        }
     }
 
     public class ChatRequest
