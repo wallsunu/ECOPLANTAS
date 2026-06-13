@@ -4,12 +4,11 @@ using EcoPlantas.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient<OllamaService>();
 builder.Services.AddScoped<AgentService>();
 
-// EF Core with PostgreSQL
+// EF Core con PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -52,7 +51,6 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -73,6 +71,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapControllers();
+
 // Seed database
 using (var scope = app.Services.CreateScope())
 {
@@ -82,3 +82,16 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+// Filtra Swagger para mostrar solo rutas que empiezan con /api
+class SoloApiFilter : Swashbuckle.AspNetCore.SwaggerGen.IDocumentFilter
+{
+    public void Apply(Microsoft.OpenApi.Models.OpenApiDocument doc, Swashbuckle.AspNetCore.SwaggerGen.DocumentFilterContext ctx)
+    {
+        var rutas = doc.Paths.Keys
+            .Where(k => !k.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        foreach (var ruta in rutas)
+            doc.Paths.Remove(ruta);
+    }
+}

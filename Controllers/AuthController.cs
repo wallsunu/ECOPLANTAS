@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using EcoPlantas.Data;
+using EcoPlantas.Models;
 
 namespace EcoPlantas.Controllers
 {
@@ -11,6 +12,8 @@ namespace EcoPlantas.Controllers
         {
             _context = context;
         }
+
+        // ── Login ────────────────────────────────────────────────
 
         [HttpGet]
         public IActionResult Login()
@@ -32,13 +35,51 @@ namespace EcoPlantas.Controllers
                 return View();
             }
 
-            HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
-            HttpContext.Session.SetString("UsuarioEmail", usuario.Email);
-            HttpContext.Session.SetString("UsuarioRol", usuario.Rol);
-
+            IniciarSesion(usuario);
             TempData["Exito"] = $"Bienvenido, {usuario.Email}";
             return RedirectToAction("Index", "Home");
         }
+
+        // ── Register ─────────────────────────────────────────────
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            if (HttpContext.Session.GetString("UsuarioEmail") != null)
+                return RedirectToAction("Index", "Home");
+            return View(new RegisterViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (_context.Usuarios.Any(u => u.Email == model.Email))
+            {
+                ModelState.AddModelError("Email", "Este email ya está registrado.");
+                return View(model);
+            }
+
+            var usuario = new Usuario
+            {
+                Email = model.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
+                Rol = "Usuario",
+                Activo = true
+            };
+
+            _context.Usuarios.Add(usuario);
+            _context.SaveChanges();
+
+            IniciarSesion(usuario);
+            TempData["Exito"] = $"Cuenta creada. ¡Bienvenido, {usuario.Email}!";
+            return RedirectToAction("Index", "Reciclaje");
+        }
+
+        // ── Logout ───────────────────────────────────────────────
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -46,6 +87,15 @@ namespace EcoPlantas.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
+        }
+
+        // ── Helpers ──────────────────────────────────────────────
+
+        private void IniciarSesion(Usuario usuario)
+        {
+            HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
+            HttpContext.Session.SetString("UsuarioEmail", usuario.Email);
+            HttpContext.Session.SetString("UsuarioRol", usuario.Rol);
         }
     }
 }
