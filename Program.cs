@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using EcoPlantas.Data;
+using EcoPlantas.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient<OllamaService>();
+builder.Services.AddScoped<AgentService>();
 
 // EF Core with PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
