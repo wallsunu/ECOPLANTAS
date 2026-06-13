@@ -1,37 +1,24 @@
 using Microsoft.EntityFrameworkCore;
 using EcoPlantas.Data;
-using EcoPlantas.Services.ML;
+using EcoPlantas.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddControllers();
-builder.Services.AddSingleton<ClasificacionReciclajeService>();
-builder.Services.AddSingleton<RecomendacionPlantaService>();
+builder.Services.AddHttpClient<OllamaService>();
+builder.Services.AddScoped<AgentService>();
 
 // EF Core con PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Swagger — disponible en todos los entornos para demostracion academica
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "EcoPlantas API",
-        Version = "v1",
-        Description = "API REST para el sistema EcoPlantas - Cieneguilla"
-    });
-    c.DocumentFilter<SoloApiFilter>();
-});
-
-// Session cache: Redis en produccion, memoria en desarrollo
+// Session cache: Redis en producción, memoria en desarrollo
 var redisConn = builder.Configuration["Redis__ConnectionString"]
              ?? builder.Configuration["Redis:ConnectionString"];
 
 if (!string.IsNullOrWhiteSpace(redisConn))
 {
+    // Normalizar URL estilo redis://host:port que entrega Render
     if (redisConn.StartsWith("redis://", StringComparison.OrdinalIgnoreCase))
     {
         var uri = new Uri(redisConn);
@@ -70,14 +57,8 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-// Swagger UI — accesible en /swagger
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "EcoPlantas API v1");
-    c.RoutePrefix = "swagger";
-});
-
+// Render termina TLS en su proxy; el contenedor recibe HTTP plano.
+// UseHttpsRedirection causaria redirect loop en produccion.
 if (app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 
