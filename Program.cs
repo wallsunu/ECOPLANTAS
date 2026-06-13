@@ -1,12 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using EcoPlantas.Data;
 using EcoPlantas.Services;
+using EcoPlantas.Services.ML;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.DocumentFilter<SoloApiFilter>();
+});
 builder.Services.AddHttpClient<OllamaService>();
 builder.Services.AddScoped<AgentService>();
+builder.Services.AddSingleton<ClasificacionReciclajeService>();
+builder.Services.AddSingleton<RecomendacionPlantaService>();
 
 // EF Core con PostgreSQL
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -61,6 +70,9 @@ if (!app.Environment.IsDevelopment())
 // UseHttpsRedirection causaria redirect loop en produccion.
 if (app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseStaticFiles();
 app.UseRouting();
