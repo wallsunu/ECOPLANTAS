@@ -1,4 +1,5 @@
 using EcoPlantas.Data;
+using EcoPlantas.Services.SemanticKernel;
 using Microsoft.EntityFrameworkCore;
 
 namespace EcoPlantas.Services
@@ -7,16 +8,26 @@ namespace EcoPlantas.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly OllamaService _ollamaService;
+        private readonly EcoPlantasSemanticKernelService _skService;
 
         public AgentService(
             ApplicationDbContext context,
-            OllamaService ollamaService)
+            OllamaService ollamaService,
+            EcoPlantasSemanticKernelService skService)
         {
             _context = context;
             _ollamaService = ollamaService;
+            _skService = skService;
         }
 
         public async Task<string> ProcesarPregunta(string pregunta)
+        {
+            // Delegar al Semantic Kernel para enriquecer el contexto con datos reales
+            return await _skService.ProcesarConContextoAsync(pregunta);
+        }
+
+        // Mantener la lógica original como fallback interno
+        private async Task<string> ProcesarPreguntaDirecto(string pregunta)
         {
             pregunta = pregunta.ToLower();
 
@@ -103,5 +114,8 @@ namespace EcoPlantas.Services
             return await _ollamaService
                 .GenerarRespuestaAsync(promptGeneral);
         }
+
+        public Task<object> ObtenerEstadoSemanticKernel()
+            => _skService.ObtenerEstadoKernelAsync();
     }
 }
