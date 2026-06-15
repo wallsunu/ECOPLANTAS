@@ -372,6 +372,8 @@ La app incluye un `Dockerfile` multi-stage listo para Render.
 | `ASPNETCORE_ENVIRONMENT` | Debe ser `Production` |
 | `ConnectionStrings__DefaultConnection` | Cadena de conexión PostgreSQL (ver abajo) |
 | `Redis__ConnectionString` | Cadena de conexión Redis (ver abajo) |
+| `Ollama__BaseUrl` | (Opcional) URL pública del servidor Ollama (ver sección IA · Ollama) |
+| `Ollama__Model` | (Opcional) Modelo de Ollama, por defecto `llama3.2` |
 
 ### ConnectionStrings__DefaultConnection
 
@@ -392,6 +394,34 @@ redis://red-xxxxxxxxxxxx:6379
 ```
 
 La app normaliza este formato automáticamente. Pégalo tal cual como valor de `Redis__ConnectionString`.
+
+### IA · Ollama (configurable)
+
+El servicio de IA (Ollama) es configurable por entorno; ya **no** usa una URL fija en código:
+
+```
+Ollama__BaseUrl=http://localhost:11434   (por defecto)
+Ollama__Model=llama3.2                   (por defecto)
+```
+
+En **local** no necesitas configurar nada: si las variables no están definidas, la app usa
+`http://localhost:11434` y el modelo `llama3.2` automáticamente.
+
+En **Render** (u otro proveedor) define:
+
+```
+Ollama__BaseUrl=https://URL_PUBLICA_DE_OLLAMA
+Ollama__Model=llama3.2
+```
+
+> ⚠️ **Importante:** en Render, `localhost` **no** apunta a tu computadora, sino al propio
+> servidor/contenedor de Render. Por eso `http://localhost:11434` solo funciona en tu máquina.
+> Para usar IA en producción necesitas exponer Ollama en una URL pública accesible
+> (host propio, túnel, o un servicio Ollama remoto) y ponerla en `Ollama__BaseUrl`.
+
+Diagnóstico rápido: `GET /api/ai/ollama-health` devuelve `baseUrl`, `model`, `disponible` y un
+`mensaje` (sin exponer secretos). Si Ollama no responde, el chat (`POST /api/ai/chat`) devuelve
+un mensaje amigable en lugar de un error 500.
 
 ### Notas de infraestructura
 
