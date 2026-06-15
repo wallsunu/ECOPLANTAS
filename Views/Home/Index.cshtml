@@ -1,8 +1,14 @@
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "EcoPlantas - Cieneguilla";
     ViewData["FullWidth"] = true;
     var email = Context.Session.GetString("UsuarioEmail");
     var logueado = email != null;
+
+    // La API key se lee de configuración (variable de entorno Mapa__ApiKey).
+    // Nunca se escribe fija aquí ni en appsettings.json.
+    var googleMapsApiKey = Configuration["Mapa:ApiKey"] ?? "";
+    var googleMapsConfigurado = !string.IsNullOrWhiteSpace(googleMapsApiKey);
 }
 
 <!-- HERO -->
@@ -148,11 +154,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="eco-map-placeholder d-flex align-items-center justify-content-center">
-                        <div class="text-center text-muted">
-                            <div style="font-size:2.5rem;">🗺️</div>
-                            <div class="small mt-1">Mapa de rutas municipales<br><span class="badge bg-secondary">Próximamente</span></div>
-                        </div>
+                    <!-- Mapa real con Google Maps API -->
+                    <div id="mapaEcoPlantas" class="eco-mapa"></div>
+                    <div id="mapaMensaje" class="eco-mapa-mensaje @(googleMapsConfigurado ? "d-none" : "")">
+                        <div style="font-size:2.5rem;">🗺️</div>
+                        <div class="small mt-1">El mapa no está disponible por el momento.<br>Verifica la configuración de Google Maps.</div>
                     </div>
                 </div>
             </div>
@@ -209,3 +215,65 @@
         </a>
     </div>
 </section>
+
+@section Scripts {
+    @if (googleMapsConfigurado)
+    {
+        <script>
+            // Centro por defecto: Cieneguilla, Lima.
+            const ECO_MAP_CENTER = { lat: -12.1167, lng: -76.8167 };
+
+            // Callback que invoca la Google Maps JavaScript API al terminar de cargar.
+            async function initMapaEcoPlantas() {
+                const contenedor = document.getElementById("mapaEcoPlantas");
+                const mensaje = document.getElementById("mapaMensaje");
+                try {
+                    const mapa = new google.maps.Map(contenedor, {
+                        center: ECO_MAP_CENTER,
+                        zoom: 12,
+                        mapTypeControl: false,
+                        streetViewControl: false
+                    });
+
+                    const infoWindow = new google.maps.InfoWindow();
+
+                    const resp = await fetch("/api/mapa/puntos");
+                    if (!resp.ok) throw new Error("No se pudieron cargar los puntos ecológicos.");
+                    const puntos = await resp.json();
+
+                    puntos.forEach(p => {
+                        const marker = new google.maps.Marker({
+                            position: { lat: p.latitud, lng: p.longitud },
+                            map: mapa,
+                            title: p.nombre
+                        });
+                        marker.addListener("click", () => {
+                            infoWindow.setContent(
+                                `<div style="max-width:220px;">
+                                    <strong>${p.nombre}</strong><br>
+                                    <span class="text-muted">${p.direccion}</span><br>
+                                    <small>${p.descripcion}</small>
+                                 </div>`);
+                            infoWindow.open(mapa, marker);
+                        });
+                    });
+                } catch (e) {
+                    contenedor.classList.add("d-none");
+                    mensaje.classList.remove("d-none");
+                }
+            }
+
+            // Si la API de Google falla al cargar, mostramos el mensaje amable.
+            function gm_authFailure() {
+                document.getElementById("mapaEcoPlantas").classList.add("d-none");
+                document.getElementById("mapaMensaje").classList.remove("d-none");
+            }
+        </script>
+        @* IMPORTANTE: la key de Google Maps JavaScript API es visible en el navegador por diseño.
+           Restríngela en Google Cloud Console por HTTP referrer (dominio) y por APIs permitidas
+           (Maps JavaScript API + Geocoding API). La key viene de configuración, nunca fija en código. *@
+        <script async
+                src="https://maps.googleapis.com/maps/api/js?key=@googleMapsApiKey&callback=initMapaEcoPlantas&loading=async">
+        </script>
+    }
+}

@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen(options =>
     options.DocumentFilter<SoloApiFilter>();
 });
 builder.Services.AddHttpClient<OllamaService>();
+builder.Services.AddHttpClient<MapaService>();
 builder.Services.AddScoped<EcoPlantasSemanticKernelService>();
 builder.Services.AddScoped<AgentService>();
 builder.Services.AddSingleton<ClasificacionReciclajeService>();

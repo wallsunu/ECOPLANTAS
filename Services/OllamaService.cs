@@ -16,7 +16,7 @@ namespace EcoPlantas.Services
         {
             var request = new
             {
-                model = "qwen3:4b",
+                model = "llama3.2",
                 prompt = prompt,
                 stream = false
             };
