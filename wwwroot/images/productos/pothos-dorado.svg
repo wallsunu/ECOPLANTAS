@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" role="img" aria-label="Pothos Dorado">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9f8ef"/>
+      <stop offset="1" stop-color="#cdeedd"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#bg)"/>
+  <!-- maceta -->
+  <path d="M168 188 h64 l-9 34 h-46 z" fill="#b07d56"/>
+  <rect x="162" y="178" width="76" height="14" rx="5" fill="#c98a5e"/>
+  <!-- hojas tipo corazón con variegado dorado -->
+  <g>
+    <ellipse cx="150" cy="120" rx="26" ry="18" fill="#2d6a4f" transform="rotate(-28 150 120)"/>
+    <ellipse cx="150" cy="120" rx="11" ry="7" fill="#d8c34a" transform="rotate(-28 150 120)"/>
+    <ellipse cx="250" cy="120" rx="26" ry="18" fill="#40916c" transform="rotate(28 250 120)"/>
+    <ellipse cx="250" cy="120" rx="11" ry="7" fill="#e3d264" transform="rotate(28 250 120)"/>
+    <ellipse cx="200" cy="96" rx="28" ry="19" fill="#2d6a4f"/>
+    <ellipse cx="200" cy="96" rx="12" ry="8" fill="#d8c34a"/>
+    <path d="M200 178 C190 150 180 135 165 120 M200 178 C210 150 220 135 235 120 M200 178 V96" stroke="#1b4332" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+  <text x="200" y="238" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700" fill="#1b4332">Pothos Dorado</text>
+</svg>

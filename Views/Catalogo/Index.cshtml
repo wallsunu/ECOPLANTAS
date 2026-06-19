@@ -12,7 +12,8 @@
         {
             <div class="col">
                 <div class="card h-100 shadow-sm border-0">
-                    <img src="@producto.ImagenUrl" class="card-img-top" alt="@producto.Nombre" style="height:200px;object-fit:cover;">
+                    <img src="@producto.ImagenUrl" class="card-img-top eco-card-img" alt="@producto.Nombre"
+                         onerror="this.onerror=null;this.src='/images/productos/placeholder-planta.svg';">
                     <div class="card-body">
                         <span class="badge mb-2" style="background-color:#52b788;">@producto.Categoria</span>
                         <h5 class="card-title">@producto.Nombre</h5>

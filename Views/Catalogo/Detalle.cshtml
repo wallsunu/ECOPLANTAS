@@ -14,7 +14,8 @@
 
     <div class="row g-4 mt-2">
         <div class="col-md-5">
-            <img src="@Model.ImagenUrl" class="img-fluid rounded shadow" alt="@Model.Nombre">
+            <img src="@Model.ImagenUrl" class="img-fluid rounded shadow eco-detalle-img" alt="@Model.Nombre"
+                 onerror="this.onerror=null;this.src='/images/productos/placeholder-planta.svg';">
         </div>
         <div class="col-md-7">
             <span class="badge mb-3" style="background-color:#52b788;font-size:0.9rem;">@Model.Categoria</span>

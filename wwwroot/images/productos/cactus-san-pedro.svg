@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" role="img" aria-label="Cactus San Pedro">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eaf7f0"/>
+      <stop offset="1" stop-color="#cfeede"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#bg)"/>
+  <!-- maceta -->
+  <path d="M168 192 h64 l-9 30 h-46 z" fill="#b07d56"/>
+  <rect x="162" y="184" width="76" height="13" rx="5" fill="#c98a5e"/>
+  <!-- cactus columnar con brazos -->
+  <g fill="#40916c" stroke="#2d6a4f" stroke-width="2">
+    <rect x="186" y="78" width="28" height="110" rx="14"/>
+    <path d="M186 130 h-18 a14 14 0 0 0 -14 14 v14 a10 10 0 0 0 20 0 v-10 h12 z"/>
+    <path d="M214 116 h18 a14 14 0 0 1 14 14 v18 a10 10 0 0 1 -20 0 v-14 h-12 z"/>
+  </g>
+  <g stroke="#2d6a4f" stroke-width="1.5">
+    <line x1="200" y1="82" x2="200" y2="184"/>
+    <line x1="193" y1="86" x2="193" y2="184"/>
+    <line x1="207" y1="86" x2="207" y2="184"/>
+  </g>
+  <text x="200" y="238" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700" fill="#1b4332">Cactus San Pedro</text>
+</svg>

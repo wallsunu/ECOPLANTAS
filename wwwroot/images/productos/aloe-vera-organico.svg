@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" role="img" aria-label="Aloe Vera Orgánico">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9f8ef"/>
+      <stop offset="1" stop-color="#cdeedd"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#bg)"/>
+  <!-- maceta -->
+  <path d="M168 190 h64 l-9 32 h-46 z" fill="#b07d56"/>
+  <rect x="162" y="181" width="76" height="14" rx="5" fill="#c98a5e"/>
+  <!-- hojas carnosas de aloe -->
+  <g fill="#52b788" stroke="#2d6a4f" stroke-width="2">
+    <path d="M200 184 C150 150 132 96 138 64 C170 92 192 130 200 184 Z"/>
+    <path d="M200 184 C250 150 268 96 262 64 C230 92 208 130 200 184 Z"/>
+    <path d="M200 184 C176 150 168 104 176 70 C194 104 200 140 200 184 Z"/>
+    <path d="M200 184 C224 150 232 104 224 70 C206 104 200 140 200 184 Z"/>
+    <path d="M200 184 C198 150 198 100 200 62 C202 100 202 150 200 184 Z"/>
+  </g>
+  <g fill="#b7e4c7">
+    <circle cx="160" cy="120" r="2.5"/><circle cx="172" cy="100" r="2.5"/>
+    <circle cx="240" cy="120" r="2.5"/><circle cx="228" cy="100" r="2.5"/>
+    <circle cx="200" cy="92" r="2.5"/>
+  </g>
+  <text x="200" y="238" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700" fill="#1b4332">Aloe Vera Orgánico</text>
+</svg>
