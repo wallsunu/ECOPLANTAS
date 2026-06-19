@@ -1,9 +1,10 @@
 using System.Text;
 using System.Text.Json;
+using EcoPlantas.Services.LLM;
 
 namespace EcoPlantas.Services
 {
-    public class OllamaService
+    public class OllamaService : ILlmService
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
@@ -13,6 +14,8 @@ namespace EcoPlantas.Services
             _httpClient = httpClient;
             _configuration = configuration;
         }
+
+        public string Provider => "Ollama";
 
         // URL base de Ollama. Configurable vía Ollama:BaseUrl (variable de entorno
         // Ollama__BaseUrl). Por defecto apunta a la instancia local de desarrollo.

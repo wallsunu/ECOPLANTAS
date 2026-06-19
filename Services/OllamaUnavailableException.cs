@@ -1,11 +1,12 @@
+using EcoPlantas.Services.LLM;
+
 namespace EcoPlantas.Services
 {
     /// <summary>
-    /// Excepción controlada que indica que el servicio de IA (Ollama) no está
-    /// disponible o no respondió correctamente. El controller la captura para
-    /// devolver un mensaje amigable en lugar de un 500 sin controlar.
+    /// Excepción controlada específica de Ollama. Hereda de <see cref="LlmUnavailableException"/>
+    /// para que el manejo genérico de proveedores LLM también la capture.
     /// </summary>
-    public class OllamaUnavailableException : Exception
+    public class OllamaUnavailableException : LlmUnavailableException
     {
         public OllamaUnavailableException(string message) : base(message) { }
     }

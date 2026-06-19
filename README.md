@@ -395,33 +395,51 @@ redis://red-xxxxxxxxxxxx:6379
 
 La app normaliza este formato automáticamente. Pégalo tal cual como valor de `Redis__ConnectionString`.
 
-### IA · Ollama (configurable)
+### IA en local y en Render
 
-El servicio de IA (Ollama) es configurable por entorno; ya **no** usa una URL fija en código:
+La IA soporta **dos proveedores** intercambiables por configuración (`AI:Provider`), sin tocar código:
+
+- **Ollama** (local, por defecto) — modelo `llama3.2` en tu máquina.
+- **OpenAI** (cloud, recomendado para Render) — API de OpenAI.
+
+El flujo es: `AiController → AgentService → EcoPlantasSemanticKernelService → LlmProviderService → (OllamaService | OpenAiLlmService)`.
+Si `AI:Provider` no está definido, se usa **Ollama** para que el entorno local siga funcionando.
+
+#### Local con Ollama
+
+No necesitas configurar nada (son los valores por defecto). De forma explícita:
 
 ```
-Ollama__BaseUrl=http://localhost:11434   (por defecto)
-Ollama__Model=llama3.2                   (por defecto)
-```
-
-En **local** no necesitas configurar nada: si las variables no están definidas, la app usa
-`http://localhost:11434` y el modelo `llama3.2` automáticamente.
-
-En **Render** (u otro proveedor) define:
-
-```
-Ollama__BaseUrl=https://URL_PUBLICA_DE_OLLAMA
+AI__Provider=Ollama
+Ollama__BaseUrl=http://localhost:11434
 Ollama__Model=llama3.2
 ```
 
-> ⚠️ **Importante:** en Render, `localhost` **no** apunta a tu computadora, sino al propio
-> servidor/contenedor de Render. Por eso `http://localhost:11434` solo funciona en tu máquina.
-> Para usar IA en producción necesitas exponer Ollama en una URL pública accesible
-> (host propio, túnel, o un servicio Ollama remoto) y ponerla en `Ollama__BaseUrl`.
+#### Render con OpenAI
 
-Diagnóstico rápido: `GET /api/ai/ollama-health` devuelve `baseUrl`, `model`, `disponible` y un
-`mensaje` (sin exponer secretos). Si Ollama no responde, el chat (`POST /api/ai/chat`) devuelve
-un mensaje amigable en lugar de un error 500.
+```
+AI__Provider=OpenAI
+OpenAI__ApiKey=TU_API_KEY        ← solo como variable de entorno en Render
+OpenAI__Model=gpt-4o-mini
+OpenAI__BaseUrl=https://api.openai.com/v1   (por defecto, opcional)
+```
+
+> ⚠️ **Notas importantes sobre la API key de OpenAI:**
+> - **ChatGPT Plus NO es lo mismo que una API key.** La suscripción Plus es para usar chatgpt.com;
+>   la API es un servicio aparte con su propia facturación.
+> - La API key se crea en el panel de OpenAI (platform.openai.com → API keys).
+> - La key se guarda **en Render como variable de entorno** (`OpenAI__ApiKey`), **nunca** en
+>   `appsettings.json` ni en el código. En `appsettings.json` el campo `ApiKey` queda vacío.
+> - En **Render, `localhost` NO apunta a tu computadora**, sino al servidor/contenedor de Render.
+>   Por eso `http://localhost:11434` (Ollama local) solo sirve en tu máquina; para producción
+>   conviene OpenAI u otro proveedor cloud accesible por URL pública.
+
+#### Diagnóstico
+
+`GET /api/ai/llm-health` devuelve `provider`, `model`, `baseUrl`, `disponible` y `mensaje`
+(sin exponer la API key). Si el proveedor no está disponible (Ollama caído, OpenAI sin key,
+timeout, etc.), `POST /api/ai/chat` responde un mensaje amigable en lugar de un error 500.
+Se mantiene `GET /api/ai/ollama-health` por compatibilidad.
 
 ### Notas de infraestructura
 

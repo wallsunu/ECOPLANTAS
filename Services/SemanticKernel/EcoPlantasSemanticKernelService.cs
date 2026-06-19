@@ -1,6 +1,7 @@
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using EcoPlantas.Data;
+using EcoPlantas.Services.LLM;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 
@@ -9,15 +10,15 @@ namespace EcoPlantas.Services.SemanticKernel
     public class EcoPlantasSemanticKernelService
     {
         private readonly ApplicationDbContext _context;
-        private readonly OllamaService _ollamaService;
+        private readonly LlmProviderService _llm;
         private readonly Kernel _kernel;
 
         public EcoPlantasSemanticKernelService(
             ApplicationDbContext context,
-            OllamaService ollamaService)
+            LlmProviderService llm)
         {
             _context = context;
-            _ollamaService = ollamaService;
+            _llm = llm;
 
             // Construir el Kernel con un chat completion dummy que delega a Ollama
             _kernel = Kernel.CreateBuilder()
@@ -29,7 +30,7 @@ namespace EcoPlantas.Services.SemanticKernel
 
         /// <summary>
         /// Construye un contexto enriquecido usando los plugins del Kernel
-        /// y delega la generación de respuesta a OllamaService.
+        /// y delega la generación de respuesta al proveedor LLM configurado.
         /// </summary>
         public async Task<string> ProcesarConContextoAsync(string pregunta)
         {
@@ -54,7 +55,7 @@ namespace EcoPlantas.Services.SemanticKernel
             Responde de forma breve, amigable y útil en español.
             """;
 
-            return await _ollamaService.GenerarRespuestaAsync(prompt);
+            return await _llm.GenerarRespuestaAsync(prompt);
         }
 
         /// <summary>

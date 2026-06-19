@@ -1,4 +1,5 @@
 using EcoPlantas.Services;
+using EcoPlantas.Services.LLM;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EcoPlantas.Controllers
@@ -9,11 +10,16 @@ namespace EcoPlantas.Controllers
     {
         private readonly AgentService _agentService;
         private readonly OllamaService _ollamaService;
+        private readonly LlmProviderService _llm;
 
-        public AiController(AgentService agentService, OllamaService ollamaService)
+        public AiController(
+            AgentService agentService,
+            OllamaService ollamaService,
+            LlmProviderService llm)
         {
             _agentService = agentService;
             _ollamaService = ollamaService;
+            _llm = llm;
         }
 
         [HttpPost("chat")]
@@ -30,18 +36,37 @@ namespace EcoPlantas.Controllers
                     respuesta
                 });
             }
-            catch (OllamaUnavailableException)
+            catch (LlmUnavailableException)
             {
-                // Respuesta amigable cuando Ollama no está disponible (caído, 404, timeout, etc.).
+                // Respuesta amigable cuando el proveedor LLM (Ollama u OpenAI) no está
+                // disponible: caído, 404, sin API key, timeout, etc. Nunca un 500 sin controlar.
                 return Ok(new
                 {
-                    respuesta = "El asistente IA no está disponible por el momento. Verifica la configuración de Ollama."
+                    respuesta = "El asistente IA no está disponible por el momento. Verifica la configuración del proveedor de IA."
                 });
             }
         }
 
         /// <summary>
-        /// Diagnóstico de Ollama. No expone secretos (la URL base no es un secreto).
+        /// Diagnóstico del proveedor LLM activo (Ollama u OpenAI). No expone la API key.
+        /// </summary>
+        [HttpGet("llm-health")]
+        public async Task<IActionResult> LlmHealth()
+        {
+            var (disponible, mensaje) = await _llm.ComprobarDisponibilidadAsync();
+
+            return Ok(new
+            {
+                provider = _llm.Provider,
+                model = _llm.Model,
+                baseUrl = _llm.BaseUrl,
+                disponible,
+                mensaje
+            });
+        }
+
+        /// <summary>
+        /// Diagnóstico específico de Ollama (compatibilidad). No expone secretos.
         /// </summary>
         [HttpGet("ollama-health")]
         public async Task<IActionResult> OllamaHealth()
