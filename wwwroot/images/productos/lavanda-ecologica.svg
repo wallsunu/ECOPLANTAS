@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" role="img" aria-label="Lavanda Ecológica">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0ecf8"/>
+      <stop offset="1" stop-color="#d8eede"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#bg)"/>
+  <!-- maceta -->
+  <path d="M170 192 h60 l-8 30 h-44 z" fill="#b07d56"/>
+  <rect x="165" y="184" width="70" height="13" rx="5" fill="#c98a5e"/>
+  <!-- tallos -->
+  <g stroke="#2d6a4f" stroke-width="3" fill="none" stroke-linecap="round">
+    <path d="M200 186 C185 150 178 120 175 84"/>
+    <path d="M200 186 C200 150 200 118 200 78"/>
+    <path d="M200 186 C215 150 222 120 225 84"/>
+  </g>
+  <!-- espigas de lavanda -->
+  <g fill="#8E44AD">
+    <g>
+      <circle cx="175" cy="84" r="6"/><circle cx="178" cy="96" r="6"/><circle cx="172" cy="108" r="6"/><circle cx="177" cy="120" r="5"/>
+    </g>
+    <g>
+      <circle cx="200" cy="78" r="6"/><circle cx="203" cy="90" r="6"/><circle cx="197" cy="102" r="6"/><circle cx="200" cy="114" r="5"/>
+    </g>
+    <g>
+      <circle cx="225" cy="84" r="6"/><circle cx="222" cy="96" r="6"/><circle cx="228" cy="108" r="6"/><circle cx="223" cy="120" r="5"/>
+    </g>
+  </g>
+  <text x="200" y="238" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700" fill="#1b4332">Lavanda Ecológica</text>
+</svg>

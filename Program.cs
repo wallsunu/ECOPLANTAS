@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using EcoPlantas.Data;
 using EcoPlantas.Services;
+using EcoPlantas.Services.LLM;
 using EcoPlantas.Services.ML;
 using EcoPlantas.Services.SemanticKernel;
 
@@ -14,6 +15,9 @@ builder.Services.AddSwaggerGen(options =>
     options.DocumentFilter<SoloApiFilter>();
 });
 builder.Services.AddHttpClient<OllamaService>();
+builder.Services.AddHttpClient<OpenAiLlmService>();
+builder.Services.AddScoped<LlmProviderService>();
+builder.Services.AddHttpClient<MapaService>();
 builder.Services.AddScoped<EcoPlantasSemanticKernelService>();
 builder.Services.AddScoped<AgentService>();
 builder.Services.AddSingleton<ClasificacionReciclajeService>();

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" role="img" aria-label="Planta EcoPlantas">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eaf7f0"/>
+      <stop offset="1" stop-color="#cfeede"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#bg)"/>
+  <!-- hoja simple centrada -->
+  <g transform="translate(200 108)">
+    <path d="M0 40 C-44 20 -44 -36 0 -52 C44 -36 44 20 0 40 Z" fill="#40916c" stroke="#2d6a4f" stroke-width="2"/>
+    <path d="M0 38 V-46 M0 6 C-18 -2 -28 -10 -34 -22 M0 -10 C18 -18 28 -26 34 -38" stroke="#1b4332" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  </g>
+  <text x="200" y="200" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="700" fill="#1b4332">🌿 EcoPlantas</text>
+  <text x="200" y="226" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="13" fill="#52796f">Imagen no disponible</text>
+</svg>

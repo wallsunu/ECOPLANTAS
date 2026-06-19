@@ -1,8 +1,14 @@
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "EcoPlantas - Cieneguilla";
     ViewData["FullWidth"] = true;
     var email = Context.Session.GetString("UsuarioEmail");
     var logueado = email != null;
+
+    // La API key se lee de configuración (variable de entorno Mapa__ApiKey).
+    // Nunca se escribe fija aquí ni en appsettings.json.
+    var googleMapsApiKey = Configuration["Mapa:ApiKey"] ?? "";
+    var googleMapsConfigurado = !string.IsNullOrWhiteSpace(googleMapsApiKey);
 }
 
 <!-- HERO -->
@@ -148,15 +154,58 @@
                             </div>
                         </div>
                     </div>
-                    <div class="eco-map-placeholder d-flex align-items-center justify-content-center">
-                        <div class="text-center text-muted">
-                            <div style="font-size:2.5rem;">🗺️</div>
-                            <div class="small mt-1">Mapa de rutas municipales<br><span class="badge bg-secondary">Próximamente</span></div>
-                        </div>
+                    <div class="eco-map-hint d-flex align-items-center gap-2 p-3">
+                        <span style="font-size:1.6rem;">🗺️</span>
+                        <span class="small text-muted mb-0">
+                            Revisa los <strong>puntos ecológicos cercanos</strong> en el mapa interactivo más abajo.
+                        </span>
                     </div>
                 </div>
             </div>
 
+        </div>
+    </div>
+</section>
+
+<!-- PUNTOS ECOLÓGICOS · GOOGLE MAPS API -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="eco-section-title mb-2">Puntos ecológicos cercanos</h2>
+            <p class="text-muted mb-0">
+                Encuentra centros de acopio y reciclaje en Lima y Cieneguilla.
+                Mapa impulsado por <strong>Google Maps API</strong>.
+            </p>
+        </div>
+
+        <!-- Buscador de dirección (Geocoding API) -->
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-8">
+                <div class="input-group eco-buscador">
+                    <input id="buscarDireccion" type="text" class="form-control"
+                           placeholder="Buscar dirección o distrito, por ejemplo Cieneguilla" />
+                    <button id="btnBuscar" class="btn eco-btn-primary px-4" type="button">Buscar</button>
+                </div>
+                <div id="buscarMensaje" class="small mt-2 d-none"></div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Mapa -->
+            <div class="col-lg-8">
+                <div id="mapaEcoPlantas" class="eco-mapa"></div>
+                <div id="mapaMensaje" class="eco-mapa-mensaje @(googleMapsConfigurado ? "d-none" : "")">
+                    <div style="font-size:2.5rem;">🗺️</div>
+                    <div class="small mt-1">El mapa no está disponible por el momento.<br>Verifica la configuración de Google Maps.</div>
+                </div>
+            </div>
+
+            <!-- Lista de tarjetas de puntos ecológicos -->
+            <div class="col-lg-4">
+                <div id="listaPuntos" class="eco-puntos-lista">
+                    <div class="text-muted small text-center py-4">Cargando puntos ecológicos…</div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -209,3 +258,178 @@
         </a>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        // Centro por defecto: Cieneguilla, Lima.
+        const ECO_MAP_CENTER = { lat: -12.1167, lng: -76.8167 };
+        const ECO_MAPS_CONFIGURADO = @(googleMapsConfigurado ? "true" : "false");
+
+        // Estado compartido del módulo de mapa.
+        let ecoMapa = null;
+        let ecoInfoWindow = null;
+        let ecoMarkers = [];
+        let ecoPuntos = [];
+        let ecoMarkerBusqueda = null;
+
+        // Escapa texto para evitar inyección al construir HTML.
+        function ecoEscape(t) {
+            const d = document.createElement("div");
+            d.textContent = t ?? "";
+            return d.innerHTML;
+        }
+
+        // Carga los puntos desde la API y pinta las tarjetas. Siempre se ejecuta,
+        // exista o no Google Maps configurado.
+        async function ecoCargarPuntos() {
+            const lista = document.getElementById("listaPuntos");
+            try {
+                const resp = await fetch("/api/mapa/puntos");
+                if (!resp.ok) throw new Error("respuesta no OK");
+                ecoPuntos = await resp.json();
+
+                if (!ecoPuntos.length) {
+                    lista.innerHTML = '<div class="text-muted small text-center py-4">No hay puntos ecológicos disponibles.</div>';
+                    return;
+                }
+
+                lista.innerHTML = ecoPuntos.map((p, i) => `
+                    <div class="eco-punto-card" data-index="${i}" role="button" tabindex="0">
+                        <div class="eco-punto-nombre">📍 ${ecoEscape(p.nombre)}</div>
+                        <div class="eco-punto-dir">${ecoEscape(p.direccion)}</div>
+                        <div class="eco-punto-desc">${ecoEscape(p.descripcion)}</div>
+                    </div>`).join("");
+
+                lista.querySelectorAll(".eco-punto-card").forEach(card => {
+                    const idx = parseInt(card.getAttribute("data-index"), 10);
+                    card.addEventListener("click", () => ecoCentrarEnPunto(idx));
+                    card.addEventListener("keypress", e => { if (e.key === "Enter") ecoCentrarEnPunto(idx); });
+                });
+            } catch (e) {
+                lista.innerHTML = '<div class="alert alert-warning small mb-0">No se pudieron cargar los puntos ecológicos en este momento.</div>';
+            }
+        }
+
+        // Centra el mapa en un punto y abre su InfoWindow (si el mapa está disponible).
+        function ecoCentrarEnPunto(i) {
+            const p = ecoPuntos[i];
+            if (!p) return;
+            if (!ecoMapa) return; // sin mapa, la tarjeta es solo informativa
+            const pos = { lat: p.latitud, lng: p.longitud };
+            ecoMapa.panTo(pos);
+            ecoMapa.setZoom(15);
+            const marker = ecoMarkers[i];
+            if (marker && ecoInfoWindow) {
+                ecoInfoWindow.setContent(ecoContenidoInfo(p));
+                ecoInfoWindow.open(ecoMapa, marker);
+            }
+            document.getElementById("mapaEcoPlantas").scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        function ecoContenidoInfo(p) {
+            return `<div style="max-width:220px;">
+                        <strong>${ecoEscape(p.nombre)}</strong><br>
+                        <span class="text-muted">${ecoEscape(p.direccion)}</span><br>
+                        <small>${ecoEscape(p.descripcion)}</small>
+                    </div>`;
+        }
+
+        // Callback que invoca la Google Maps JavaScript API al terminar de cargar.
+        async function initMapaEcoPlantas() {
+            const contenedor = document.getElementById("mapaEcoPlantas");
+            const mensaje = document.getElementById("mapaMensaje");
+            try {
+                ecoMapa = new google.maps.Map(contenedor, {
+                    center: ECO_MAP_CENTER,
+                    zoom: 12,
+                    mapTypeControl: false,
+                    streetViewControl: false
+                });
+                ecoInfoWindow = new google.maps.InfoWindow();
+
+                // Asegura que los puntos estén cargados antes de crear marcadores.
+                if (!ecoPuntos.length) await ecoCargarPuntos();
+
+                ecoMarkers = ecoPuntos.map(p => {
+                    const marker = new google.maps.Marker({
+                        position: { lat: p.latitud, lng: p.longitud },
+                        map: ecoMapa,
+                        title: p.nombre
+                    });
+                    marker.addListener("click", () => {
+                        ecoInfoWindow.setContent(ecoContenidoInfo(p));
+                        ecoInfoWindow.open(ecoMapa, marker);
+                    });
+                    return marker;
+                });
+            } catch (e) {
+                contenedor.classList.add("d-none");
+                mensaje.classList.remove("d-none");
+            }
+        }
+
+        // Buscador de dirección → /api/mapa/geocode
+        async function ecoBuscarDireccion() {
+            const input = document.getElementById("buscarDireccion");
+            const msg = document.getElementById("buscarMensaje");
+            const direccion = (input.value || "").trim();
+
+            msg.className = "small mt-2 text-muted";
+            if (!direccion) { msg.textContent = "Escribe una dirección o distrito para buscar."; return; }
+            if (!ecoMapa) { msg.textContent = "El mapa no está disponible por el momento."; return; }
+
+            msg.textContent = "Buscando…";
+            try {
+                const resp = await fetch("/api/mapa/geocode?direccion=" + encodeURIComponent(direccion));
+                const data = await resp.json();
+                if (data && data.exito && data.latitud != null && data.longitud != null) {
+                    const pos = { lat: data.latitud, lng: data.longitud };
+                    ecoMapa.panTo(pos);
+                    ecoMapa.setZoom(15);
+                    if (ecoMarkerBusqueda) ecoMarkerBusqueda.setMap(null);
+                    ecoMarkerBusqueda = new google.maps.Marker({
+                        position: pos,
+                        map: ecoMapa,
+                        title: data.direccionFormateada || direccion,
+                        animation: google.maps.Animation.DROP
+                    });
+                    ecoInfoWindow.setContent(
+                        `<div style="max-width:220px;"><strong>${ecoEscape(data.direccionFormateada || direccion)}</strong></div>`);
+                    ecoInfoWindow.open(ecoMapa, ecoMarkerBusqueda);
+                    msg.className = "small mt-2 text-success";
+                    msg.textContent = "Ubicación encontrada: " + (data.direccionFormateada || direccion);
+                } else {
+                    msg.className = "small mt-2 text-warning";
+                    msg.textContent = "No encontramos esa dirección. Intenta con otra referencia.";
+                }
+            } catch (e) {
+                msg.className = "small mt-2 text-warning";
+                msg.textContent = "No se pudo realizar la búsqueda en este momento.";
+            }
+        }
+
+        // Si la API de Google falla al autenticar, mostramos el mensaje amable.
+        function gm_authFailure() {
+            document.getElementById("mapaEcoPlantas").classList.add("d-none");
+            document.getElementById("mapaMensaje").classList.remove("d-none");
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            ecoCargarPuntos();
+            const btn = document.getElementById("btnBuscar");
+            const input = document.getElementById("buscarDireccion");
+            if (btn) btn.addEventListener("click", ecoBuscarDireccion);
+            if (input) input.addEventListener("keypress", e => { if (e.key === "Enter") ecoBuscarDireccion(); });
+        });
+    </script>
+
+    @if (googleMapsConfigurado)
+    {
+        @* IMPORTANTE: la key de Google Maps JavaScript API es visible en el navegador por diseño.
+           Restríngela en Google Cloud Console por HTTP referrer (dominio) y por APIs permitidas
+           (Maps JavaScript API + Geocoding API). La key viene de configuración, nunca fija en código. *@
+        <script async
+                src="https://maps.googleapis.com/maps/api/js?key=@googleMapsApiKey&callback=initMapaEcoPlantas&loading=async">
+        </script>
+    }
+}

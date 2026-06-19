@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" width="400" height="250" role="img" aria-label="Helecho de Boston">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e9f8ef"/>
+      <stop offset="1" stop-color="#cdeedd"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" fill="url(#bg)"/>
+  <!-- maceta -->
+  <path d="M170 190 h60 l-8 32 h-44 z" fill="#b07d56"/>
+  <rect x="165" y="181" width="70" height="13" rx="5" fill="#c98a5e"/>
+  <!-- frondas de helecho -->
+  <g stroke="#2d6a4f" stroke-width="3" fill="none" stroke-linecap="round">
+    <path d="M200 182 C180 140 168 110 150 70"/>
+    <path d="M200 182 C220 140 232 110 250 70"/>
+    <path d="M200 182 C196 140 196 100 200 60"/>
+    <path d="M200 182 C188 150 176 128 158 104"/>
+    <path d="M200 182 C212 150 224 128 242 104"/>
+  </g>
+  <g fill="#52b788">
+    <circle cx="150" cy="70" r="5"/><circle cx="250" cy="70" r="5"/><circle cx="200" cy="60" r="5"/>
+    <circle cx="166" cy="92" r="4"/><circle cx="234" cy="92" r="4"/>
+    <circle cx="178" cy="116" r="4"/><circle cx="222" cy="116" r="4"/>
+    <circle cx="158" cy="104" r="4"/><circle cx="242" cy="104" r="4"/>
+  </g>
+  <text x="200" y="238" text-anchor="middle" font-family="Segoe UI, Arial, sans-serif" font-size="19" font-weight="700" fill="#1b4332">Helecho de Boston</text>
+</svg>

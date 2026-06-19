@@ -176,6 +176,101 @@ body {
     padding: 16px;
 }
 
+/* ── Mapa Google Maps ── */
+.eco-mapa {
+    width: 100%;
+    min-height: 420px;
+    height: 420px;
+    border-radius: 16px;
+    border: 1px solid #d8f3dc;
+    box-shadow: 0 8px 24px rgba(45, 106, 79, .12);
+    overflow: hidden;
+}
+
+.eco-mapa-mensaje {
+    background: var(--eco-light);
+    border: 2px dashed #b7e4c7;
+    border-radius: 16px;
+    min-height: 420px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* Pista hacia el mapa dentro del panel municipal */
+.eco-map-hint {
+    background: var(--eco-light);
+    border: 1px solid #d8f3dc;
+    border-radius: 12px;
+}
+
+/* Buscador de dirección */
+.eco-buscador .form-control:focus {
+    border-color: var(--eco-dark);
+    box-shadow: none;
+}
+
+/* Lista de tarjetas de puntos ecológicos */
+.eco-puntos-lista {
+    max-height: 420px;
+    overflow-y: auto;
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.eco-punto-card {
+    background: #fff;
+    border: 1px solid #e3efe8;
+    border-left: 4px solid var(--eco-green);
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+
+.eco-punto-card:hover,
+.eco-punto-card:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(45, 106, 79, .15);
+    border-left-color: var(--eco-dark);
+    outline: none;
+}
+
+.eco-punto-nombre {
+    font-weight: 700;
+    color: var(--eco-dark);
+    font-size: .95rem;
+}
+
+.eco-punto-dir {
+    color: #6c757d;
+    font-size: .82rem;
+    margin-top: 2px;
+}
+
+.eco-punto-desc {
+    color: #495057;
+    font-size: .82rem;
+    margin-top: 4px;
+}
+
+@media (max-width: 576px) {
+    .eco-mapa,
+    .eco-mapa-mensaje {
+        height: 300px;
+        min-height: 300px;
+    }
+    .eco-puntos-lista {
+        max-height: none;
+    }
+}
+
 /* ── ODS ── */
 .eco-ods-badge {
     width: 90px; height: 90px;
@@ -208,6 +303,23 @@ body {
 .nav-link {
     font-weight: 500;
     transition: color .15s;
+}
+
+/* ── Imágenes del catálogo ── */
+.eco-card-img {
+    height: 210px;
+    width: 100%;
+    object-fit: cover;
+    background: var(--eco-light);
+    border-top-left-radius: .5rem;
+    border-top-right-radius: .5rem;
+}
+
+.eco-detalle-img {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    background: var(--eco-light);
 }
 
 /* ── Forms floats fix ── */
